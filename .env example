@@ -1,0 +1,19 @@
+# POSTGRES
+POSTGRES_NAME = postgres
+
+POSTGRES_USER = postgres
+POSTGRES_PASSWORD = pass
+POSTGRES_HOST = payment_db
+POSTGRES_PORT = 5432
+POSTGRES_DB = postgres
+
+
+# POSTGRES
+PGADMIN_DEFAULT_EMAIL=test
+PGADMIN_DEFAULT_PASSWORD=pass
+SCRIPT_NAME=/pgadmin4
+
+DATABASE_URL=postgresql+asyncpg://postgres:pass@payment_db:5432/postgres
+
+# REDIS
+REDIS_HOST = payment_prod

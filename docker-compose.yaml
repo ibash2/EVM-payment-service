@@ -1,0 +1,56 @@
+services:
+  payment_db:
+    image: postgres:15
+    container_name: payment_db
+    command: -c listen_addresses='*'
+    env_file:
+      - .env
+    ports:
+      - "5432"
+
+  payment_redis:
+    image: redis
+    container_name: payment_redis
+    command: sh -c "touch /var/log/redis.log && redis-server /usr/local/etc/redis/redis.conf"
+    volumes:
+      - ./configs/redis.conf:/usr/local/etc/redis/redis.conf
+      - /var/log/myapp/:/var/log/myapp/redis_logs.log
+
+  payment_pgadmin:
+    image: dpage/pgadmin4
+    container_name: payment_pgadmin4
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "80"
+    depends_on:
+      - payment_db
+
+  payment_app:
+    image: payment_app
+    container_name: payment_app
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - /var/log/myapp/:/app/logs
+      - ./:/app
+    ports:
+      - "8000"
+    depends_on:
+      - payment_db
+      - payment_redis
+
+  payment_nginx:
+    image: nginx:latest
+    container_name: payment_nginx
+    env_file: 
+      - .env
+    ports:
+      - "7777:7777"
+    volumes:
+      - ./configs/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - payment_app
