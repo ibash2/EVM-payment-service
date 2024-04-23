@@ -7,6 +7,7 @@ import aiohttp
 from web3 import Web3, HTTPProvider
 from web3.middleware import geth_poa_middleware
 
+from src.database import Network
 from src.logger import Logger
 
 from src.constants import PaymentStatus
@@ -17,7 +18,7 @@ logger = Logger.get_auth_logger()
 
 
 class BlockchainDaemon(Thread):
-    def __init__(self, network, payments: list[Payment], loop) -> None:
+    def __init__(self, network: Network, payments: list[Payment], loop) -> None:
         super().__init__()
         self.daemon = True
         self.loop: AbstractEventLoop = loop
@@ -28,7 +29,8 @@ class BlockchainDaemon(Thread):
         self.w3 = Web3(HTTPProvider(self.network.rpc))
 
         # Inject the PoA middleware to the innermost layer
-        self.w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+        if self.network.is_middleware:
+            self.w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
         self.payments = payments
         self.checked_bloc = 6014297

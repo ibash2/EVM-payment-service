@@ -8,6 +8,7 @@ from sqlalchemy import (
     String,
     Update,
     ForeignKey,
+    Boolean,
 )
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -69,6 +70,7 @@ class Network(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     rpc = Column(String, nullable=False)
+    is_middleware = Column(Boolean, nullable=False)
     explorer = Column(String, nullable=False)
     symbol = Column(String, nullable=False)
     decimals = Column(Integer, nullable=False)
